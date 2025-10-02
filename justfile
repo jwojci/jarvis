@@ -14,3 +14,7 @@ upload file:
 # Usage: just list-docs
 list-files:
     uv run scripts/data_warehouse.py list-files
+
+# --- Application Commands ---
+ingest file:
+    jarvis ingest "{{file}}"
