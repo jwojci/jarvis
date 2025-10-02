@@ -9,4 +9,8 @@ wheels/
 # Virtual environments
 .venv
 
+# Project specific ignores 
+.env 
 plan.md
+minio_data/
+qdrant_data/

@@ -19,6 +19,6 @@ services:
     volumes:
       - ./minio_data:/data
     environment:
-      - MINIO_ROOT_USER=your_minio_access_key  # CHANGE THIS
-      - MINIO_ROOT_PASSWORD=your_minio_secret_key # CHANGE THIS
+      - MINIO_ROOT_USER=minioadmin  
+      - MINIO_ROOT_PASSWORD=minioadmin 
     command: server /data --console-address ":9001"
