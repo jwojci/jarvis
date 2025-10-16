@@ -15,3 +15,4 @@ plan.md
 minio_data/
 qdrant_data/
 tmp/
+.zen/config.yaml

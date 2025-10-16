@@ -1,0 +1,2 @@
+# If the pipeline ever needs parameters they would go here
+# The run.py script would then have to be updated to load and pass them
