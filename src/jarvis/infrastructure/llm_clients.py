@@ -9,10 +9,10 @@ from jarvis.domain.books import Chapter, BookMetadata, ChapterContent
 
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 try:
-    if not GEMINI_API_KEY:
+    if not GOOGLE_API_KEY:
         raise ValueError("Gemini API key is not set.")
     gemini_client = genai.Client()
     logger.success("Gemini API Client initialized.")

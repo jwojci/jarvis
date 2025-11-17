@@ -8,7 +8,7 @@ class Settings(BaseSettings):
 
     # Gemini API
     GEMINI_MODEL_ID: str = "gemini-2.5-flash"
-    GEMINI_API_KEY: str | None = None
+    GOOGLE_API_KEY: str | None = None
 
     # Huggingface API
     HUGGINGFACE_ACCESS_TOKEN: str | None = None
