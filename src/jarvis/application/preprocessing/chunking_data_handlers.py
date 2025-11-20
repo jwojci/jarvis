@@ -21,14 +21,14 @@ class ChunkingDataHandler(ABC, Generic[ParsedBookDocumentT, ChunkT]):
     """
 
     @abstractmethod
-    def chunk(
+    async def chunk(
         self, data_model: ParsedBookDocumentT, metadata: dict
     ) -> list[DocumentSection]:
         pass
 
 
 class PDFChunkingHandler(ChunkingDataHandler):
-    def chunk(self, data_model: ParsedBookDocument) -> list[ChapterContent]:
+    async def chunk(self, data_model: ParsedBookDocument) -> list[ChapterContent]:
         """
         Parses and splits full markdown doc (a parsed PDF of a book) into a list of ChapterContent objects.
         """
@@ -52,7 +52,7 @@ class PDFChunkingHandler(ChunkingDataHandler):
             ]
 
         toc_text = match.group(1).strip()
-        toc_structured = get_toc_from_llm(toc_text=toc_text)
+        toc_structured = await get_toc_from_llm(toc_text=toc_text)
         if not toc_structured:
             return []
 

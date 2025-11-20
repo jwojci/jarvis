@@ -1,4 +1,6 @@
-# TODOs 
+
+# Jarvis: A High-Performance, Async RAG System
+
 TODO: Write README.md   
 TODO: Finish implementing the Query Enhancement Layer  
 TODO: Add more data sources (arxiv papers, technical documentation (crawl4ai for automated scraping), blogs, articles)  

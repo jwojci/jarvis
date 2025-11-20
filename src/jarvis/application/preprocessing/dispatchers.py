@@ -3,7 +3,6 @@ from io import BytesIO
 from pathlib import Path
 
 from jarvis.domain.documents import ParsedDocument, DocumentSection
-from jarvis.domain.books import ParsedBookDocument, ChapterContent
 from jarvis.domain.types import DataCategory
 from jarvis.domain.chunks import Chunk
 from jarvis.domain.base import VectorBaseDocument
@@ -69,11 +68,11 @@ class ChunkingDispatcher:
     factory = ChunkingHandlerFactory()
 
     @classmethod
-    def dispatch(cls, parsed_document: ParsedDocument) -> list[DocumentSection]:
+    async def dispatch(cls, parsed_document: ParsedDocument) -> list[DocumentSection]:
         data_category = parsed_document.category
         handler = cls.factory.create_handler(data_category=data_category)
 
-        sections = handler.chunk(parsed_document)
+        sections = await handler.chunk(parsed_document)
 
         logger.success(
             "Document chunked successfully into structural sections.",
@@ -97,12 +96,12 @@ class ProcessingDispatcher:
     factory = ProcessingHandlerFactory()
 
     @classmethod
-    def dispatch(cls, section: DocumentSection, **kwargs) -> list[Chunk]:
+    async def dispatch(cls, section: DocumentSection, **kwargs) -> list[Chunk]:
         data_category = section.category
 
         handler = cls.factory.create_handler(data_category)
 
-        return handler.process(section, **kwargs)
+        return await handler.process(section, **kwargs)
 
 
 class EmbeddingHandlerFactory:
