@@ -97,7 +97,7 @@ just ingest
 
 ## 🗺 Roadmap
 
-### Phase 1: Core Engineering (Current)
+### Phase 1: Core (Current)
 
   - [x] Implement AsyncIO & Rate Limiting
   - [x] Implement Hierarchical Chunking
@@ -118,4 +118,5 @@ just ingest
   - [ ] **Function Calling:** Enable the system to execute code or file operations.
 
 <!-- end list -->
+
 
