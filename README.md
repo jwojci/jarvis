@@ -12,13 +12,19 @@ The system follows a modular **Domain-Driven Design (DDD)** approach, orchestrat
 
 ```mermaid
 graph LR
-    A[MinIO S3] -->|Stream| B(Async Parser)
-    B --> C{Dispatcher}
-    C -->|PDF| D[Hierarchical Chunker]
-    D --> E[Semantic Split]
-    E --> F[Window Split]
-    F -->|Batched| G[Embedding Service]
-    G -->|Dense + Sparse| H[(Qdrant Vector DB)]
+    subgraph Ingestion["Ingestion Layer (Async)"]
+        A[Sources: S3/MinIO] -->|Stream| B(Async Dispatcher)
+        B --> C[Hierarchical Chunking]
+        C --> D[Embedding Service]
+        D -->|Dense + Sparse| E[(Qdrant Vector DB)]
+    end
+
+    subgraph Inference["Inference Layer (Planned)"]
+        Q[User Query] --> H{Query Enhancement}
+        H -->|Hybrid Search| E
+        E -->|Context| G[LLM Reasoner]
+        G -->|Response| U[User]
+    end
 ````
 
 ### Tech Stack
@@ -68,7 +74,6 @@ The system uses Factory and Dispatcher patterns to handle different data types. 
 | :--- | :--- | :--- |
 | **Qdrant vs. Pinecone** | Chose Qdrant for its local Docker support, Rust performance, and native support for Hybrid Search (Sparse/Dense). | Requires self-hosting management compared to fully managed Pinecone. |
 | **ZenML vs. Airflow** | ZenML allows for lightweight, code-first pipeline definition without the overhead of a scheduler/webserver in dev. | Less "visual" monitoring out-of-the-box compared to Airflow's DAG UI. |
-| **Gemini Flash vs. GPT-4** | Selected Gemini 1.5 Flash for the Ingestion layer due to its massive context window and low cost for summarization tasks. | GPT-4 has slightly better reasoning, but the cost/latency tradeoff wasn't justified for bulk summarization. |
 | **Async vs. Sync** | Refactored the entire codebase to `async/await` to handle I/O bound LLM tasks. | Increased code complexity and requires careful management of the Event Loop (`asyncio.run`), but necessary for throughput. |
 
 -----
@@ -92,26 +97,25 @@ just ingest
 
 ## 🗺 Roadmap
 
-### Phase 1: Ingestion Hardening (Current)
+### Phase 1: Core Engineering (Current)
 
   - [x] Implement AsyncIO & Rate Limiting
   - [x] Implement Hierarchical Chunking
-  - [ ] **Circuit Breakers:** Add `tenacity` retry logic for network resilience.
   - [ ] **Observability:** Integrate **LangSmith** for full trace visualization.
+  - [ ] **Reliability:** Implement Circuit Breakers (`tenacity`) for API resilience.
 
-### Phase 2: Hybrid Search Implementation
+### Phase 2: Search & Retrieval
 
-  - [ ] **Sparse Vectors:** Implement SPLADE/BGE-M3 embedding generation.
-  - [ ] **Qdrant Config:** Update collection schema for Named Vectors (`dense` + `sparse`).
-  - [ ] **Reranking:** Implement `CrossEncoder` step for result re-ordering.
+  - [ ] **Hybrid Search:** Implement Sparse Vectors (SPLADE) alongside Dense embeddings.
+  - [ ] **Query Enhancement:** Finish implementing the Query Expansion/Transformation layer.
+  - [ ] **Evaluation:** Automated dataset creation and Ragas evaluation pipeline.
 
-### Phase 3: Inference & Evaluation
+### Phase 3: The "Brain" (Expansion)
 
-  - [ ] **Inference Engine:** Build the `QueryEnhancement` layer and Answer Generation.
-  - [ ] **Evaluation Pipeline:** Create a CI/CD job running **Ragas** to score retrieval precision/recall on every commit.
-
-### Phase 4: Autonomy
-
-  - [ ] **Local LLM:** Drop-in replacement support for **Ollama** (Llama 3 / Mistral) for privacy-sensitive deployments.
+  - [ ] **Data Sources:** Add handlers for Arxiv papers and automated scraping (Crawl4AI) for technical docs.
+  - [ ] **Local Models:** Add drop-in support for **Ollama** to run fully offline.
+  - [ ] **Memory:** Implement Long-Term Memory (User preference & Project context).
+  - [ ] **Function Calling:** Enable the system to execute code or file operations.
 
 <!-- end list -->
+
